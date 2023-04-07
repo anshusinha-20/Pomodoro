@@ -13,9 +13,20 @@ LONG_BREAK_MIN = 20
 
 # ---------------------------- TIMER RESET ------------------------------- # 
 
-# ---------------------------- TIMER MECHANISM ------------------------------- # 
+# ---------------------------- TIMER MECHANISM ------------------------------- #
+"""function to start the timer"""
+def startTimer():
+    countDown(WORK_MIN * 60)
 
-# ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
+# ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
+"""function to count down time"""
+def countDown(time):
+    minutes = time // 60
+    seconds = time % 60
+    canvas.itemconfig(timerText, text=f"{minutes}:{seconds}")
+    if time > 0:
+        window.after(1000, countDown, time - 1)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 """created the window object"""
@@ -27,7 +38,7 @@ window.config(padx=100, pady=50, bg=YELLOW)
 canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
 tomatoImage = PhotoImage(file="tomato.png")
 canvas.create_image(100, 112, image=tomatoImage)
-canvas.create_text(100, 130, text="00:00", font=(FONT_NAME, 35, "bold"))
+timerText = canvas.create_text(100, 130, text="00:00", font=(FONT_NAME, 35, "bold"))
 canvas.grid(row=2, column=2)
 
 """created the labelTimer object"""
@@ -41,7 +52,7 @@ labelCheck.grid(row=4, column=2)
 labelCheck.config(padx=20, pady=20)
 
 """created the buttonStart object"""
-buttonStart = Button(text="Start")
+buttonStart = Button(text="Start", command=startTimer)
 buttonStart.grid(row=3, column=1)
 buttonStart.config(padx=20, pady=20)
 
