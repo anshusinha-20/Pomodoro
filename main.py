@@ -23,7 +23,13 @@ def startTimer():
 def countDown(time):
     minutes = time // 60
     seconds = time % 60
-    canvas.itemconfig(timerText, text=f"{minutes}:{seconds}")
+
+    """improved the UI of time display"""
+    if len(str(seconds)) == 1:
+        canvas.itemconfig(timerText, text=f"{minutes}:0{seconds}")
+    else:
+        canvas.itemconfig(timerText, text=f"{minutes}:{seconds}")
+
     if time > 0:
         window.after(1000, countDown, time - 1)
 
