@@ -1,6 +1,9 @@
 """imported every class from the tkinter module"""
 from tkinter import *
 
+"""imported math module"""
+import math
+
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
 RED = "#e7305b"
@@ -11,8 +14,19 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
+timer = None
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+
+# ---------------------------- TIMER RESET ------------------------------- #
+"""function to stop the timer"""
+def stopTimer():
+    window.after_cancel(timer)
+    canvas.itemconfig(timerText, text="00:00")
+    labelTimer.config(text="Timer", fg=GREEN)
+    labelCheck.config(text="")
+    global reps
+    reps = 0
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 """function to start the timer"""
@@ -25,10 +39,10 @@ def startTimer():
     longBreakSec = LONG_BREAK_MIN * 60
 
     if reps % 8 == 0:
-        labelTimer.config(text="Long Break", fg=RED)
+        labelTimer.config(text="Break", fg=RED)
         countDown(longBreakSec)
     elif reps % 2 == 0:
-        labelTimer.config(text="Short Break", fg=PINK)
+        labelTimer.config(text="Break", fg=PINK)
         countDown(shortBreakSec)
     elif reps % 2 != 0:
         labelTimer.config(text="Work", fg=GREEN)
@@ -48,9 +62,15 @@ def countDown(time):
         canvas.itemconfig(timerText, text=f"{minutes}:{seconds}")
 
     if time > 0:
-        window.after(1, countDown, time - 1)
+        global timer
+        timer = window.after(1000, countDown, time - 1)
     else:
         startTimer()
+        marks = ""
+        workSessions = math.floor(reps/2)
+        for _ in range(workSessions):
+            marks += "✔"
+        labelCheck.config(text=marks)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -72,7 +92,7 @@ labelTimer.grid(row=1, column=2)
 labelTimer.config(padx=20, pady=20)
 
 """created the labelCheck object"""
-labelCheck = Label(text="✔", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"))
+labelCheck = Label(fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"))
 labelCheck.grid(row=4, column=2)
 labelCheck.config(padx=20, pady=20)
 
@@ -82,7 +102,7 @@ buttonStart.grid(row=3, column=1)
 buttonStart.config(padx=20, pady=20)
 
 """created the buttonReset object"""
-buttonReset = Button(text="Reset")
+buttonReset = Button(text="Reset", command=stopTimer)
 buttonReset.grid(row=3, column=3)
 buttonReset.config(padx=20, pady=20)
 
